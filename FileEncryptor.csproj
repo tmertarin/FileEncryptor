@@ -1,25 +1,33 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Uygulama türü -->
     <OutputType>WinExe</OutputType>
-
-    <!-- Windows hedefli .NET -->
     <TargetFramework>net10.0-windows</TargetFramework>
 
-    <!-- WinForms aktif -->
     <UseWindowsForms>true</UseWindowsForms>
-
-    <!-- PLATFORM UYARI ÇÖZÜMÜ -->
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
 
-    <!-- Modern C# ayarları -->
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <!-- Güvenlik & performans için önerilen -->
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' != ''">
+    <OutputType Condition="'$(OutputType)' == ''">WinExe</OutputType>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">net10.0-windows</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'">
+    <UseWindowsForms Condition="'$(UseWindowsForms)' != 'false'">true</UseWindowsForms>
+    <EnableWindowsTargeting Condition="'$(EnableWindowsTargeting)' != 'false'">true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ImplicitUsings Condition="'$(ImplicitUsings)' == ''">enable</ImplicitUsings>
+    <Nullable Condition="'$(Nullable)' == ''">enable</Nullable>
+    <LangVersion Condition="'$(LangVersion)' == ''">latest</LangVersion>
   </PropertyGroup>
 
 </Project>
