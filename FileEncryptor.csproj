@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Uygulama türü -->
+    <OutputType>WinExe</OutputType>
+
+    <!-- Windows hedefli .NET -->
+    <TargetFramework>net10.0-windows</TargetFramework>
+
+    <!-- WinForms aktif -->
+    <UseWindowsForms>true</UseWindowsForms>
+
+    <!-- PLATFORM UYARI ÇÖZÜMÜ -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+
+    <!-- Modern C# ayarları -->
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- Güvenlik & performans için önerilen -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+</Project>
