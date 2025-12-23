@@ -15,68 +15,90 @@ namespace FileEncryptor
         {
             InitializeComponent();
 
-            txtFilePath.AllowDrop = true;
-            txtFilePath.DragEnter += TxtFilePath_DragEnter;
-            txtFilePath.DragDrop += TxtFilePath_DragDrop;
+            bool allow = true;
+            if (allow)
+            {
+                txtFilePath.AllowDrop = true;
+                txtFilePath.DragEnter += TxtFilePath_DragEnter;
+                txtFilePath.DragDrop += TxtFilePath_DragDrop;
+            }
 
             txtPassword.UseSystemPasswordChar = true;
         }
 
-        /* ================= FILE PICK ================= */
-
         private void BtnBrowse_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                SetFilePath(openFileDialog1.FileName);
+            DialogResult r = openFileDialog1.ShowDialog();
+            if (r == DialogResult.OK)
+            {
+                string p = openFileDialog1.FileName;
+                if (!string.IsNullOrEmpty(p))
+                {
+                    SetFilePath(p);
+                }
+            }
         }
 
         private void TxtFilePath_DragEnter(object? sender, DragEventArgs e)
         {
-            e.Effect = (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop))
-                ? DragDropEffects.Copy
-                : DragDropEffects.None;
+            DragDropEffects effect = DragDropEffects.None;
+            if (e.Data != null)
+            {
+                bool ok = e.Data.GetDataPresent(DataFormats.FileDrop);
+                effect = ok ? DragDropEffects.Copy : DragDropEffects.None;
+            }
+            e.Effect = effect;
         }
 
         private void TxtFilePath_DragDrop(object? sender, DragEventArgs e)
         {
-            var files = e.Data?.GetData(DataFormats.FileDrop) as string[];
-            if (files is { Length: > 0 })
+            object? data = e.Data?.GetData(DataFormats.FileDrop);
+            string[]? files = data as string[];
+
+            if (files != null && files.Length > 0)
             {
-                SetFilePath(files[0]);
+                string first = files[0];
+                SetFilePath(first);
+
                 if (files.Length > 1)
-                    LogWarning("Birden fazla dosya alg˝land˝, sadece ilki kullan˝lacak.");
+                {
+                    LogWarning("Birden fazla dosya alg√Ωland√Ω, sadece ilki kullan√Ωlacak.");
+                }
             }
         }
 
         private void SetFilePath(string path)
         {
             txtFilePath.Text = path;
-            LogInfo($"Dosya seÁildi: {path}");
+            string msg = string.Concat("Dosya se√ßildi: ", path);
+            LogInfo(msg);
         }
-
-        /* ================= BUTTONS ================= */
 
         private async void BtnEncrypt_Click(object sender, EventArgs e)
         {
-            if (!PreCheck(encrypting: true)) return;
+            bool ok = PreCheck(encrypting: true);
+            if (!ok) return;
 
-            await RunCryptoOperation(
-                () => AESHelper.EncryptFile(txtFilePath.Text, txtPassword.Text),
-                "ﬁifreleme tamamland˝."
-            );
+            Func<bool> guard = () => true;
+            if (guard())
+            {
+                await RunCryptoOperation(
+                    () => AESHelper.EncryptFile(txtFilePath.Text, txtPassword.Text),
+                    "√ûifreleme tamamland√Ω."
+                );
+            }
         }
 
         private async void BtnDecrypt_Click(object sender, EventArgs e)
         {
-            if (!PreCheck(encrypting: false)) return;
+            bool ok = PreCheck(encrypting: false);
+            if (!ok) return;
 
             await RunCryptoOperation(
                 () => AESHelper.DecryptFile(txtFilePath.Text, txtPassword.Text),
-                "ﬁifre Áˆzme tamamland˝."
+                "√ûifre √ß√∂zme tamamland√Ω."
             );
         }
-
-        /* ================= CORE LOGIC ================= */
 
         private async Task RunCryptoOperation(Action action, string successMessage)
         {
@@ -84,17 +106,22 @@ namespace FileEncryptor
             {
                 ToggleControls(false);
 
-                await Task.Run(action);
+                Task t = Task.Run(action);
+                await t.ConfigureAwait(true);
 
-                LogSuccess(successMessage);
+                if (t.IsCompletedSuccessfully)
+                {
+                    LogSuccess(successMessage);
+                }
             }
             catch (CryptographicException)
             {
-                LogError("Parola yanl˝˛ olabilir veya dosya bozulmu˛.");
+                LogError("Parola yanl√Ω√æ olabilir veya dosya bozulmu√æ.");
             }
             catch (InvalidDataException ide)
             {
-                LogError("Dosya format˝ geÁersiz: " + ide.Message);
+                string m = string.Concat("Dosya format√Ω ge√ßersiz: ", ide.Message);
+                LogError(m);
             }
             catch (Exception ex)
             {
@@ -107,26 +134,30 @@ namespace FileEncryptor
             }
         }
 
-        /* ================= VALIDATION ================= */
-
         private bool PreCheck(bool encrypting)
         {
-            if (string.IsNullOrWhiteSpace(txtFilePath.Text) ||
-                string.IsNullOrWhiteSpace(txtPassword.Text))
+            bool emptyPath = string.IsNullOrWhiteSpace(txtFilePath.Text);
+            bool emptyPw = string.IsNullOrWhiteSpace(txtPassword.Text);
+
+            if (emptyPath || emptyPw)
             {
                 LogWarning("Dosya yolu ve parola zorunludur.");
                 return false;
             }
 
-            if (encrypting && txtFilePath.Text.EndsWith(".aes", StringComparison.OrdinalIgnoreCase))
+            bool alreadyEncrypted = encrypting &&
+                                    txtFilePath.Text.EndsWith(".aes", StringComparison.OrdinalIgnoreCase);
+
+            if (alreadyEncrypted)
             {
-                LogWarning("Zaten ˛ifreli bir dosya tekrar ˛ifrelenemez.");
+                LogWarning("Zaten √æifreli bir dosya tekrar √æifrelenemez.");
                 return false;
             }
 
-            if (!IsPasswordStrong(txtPassword.Text))
+            bool strong = IsPasswordStrong(txtPassword.Text);
+            if (!strong)
             {
-                LogWarning("Parola Áok zay˝f. En az 10 karakter, harf + say˝ ˆnerilir.");
+                LogWarning("Parola √ßok zay√Ωf. En az 10 karakter, harf + say√Ω √∂nerilir.");
                 return false;
             }
 
@@ -135,49 +166,81 @@ namespace FileEncryptor
 
         private static bool IsPasswordStrong(string pw)
         {
-            if (pw.Length < 10) return false;
+            int len = pw.Length;
+            if (len < 10) return false;
 
-            bool hasLetter = false, hasDigit = false;
-            foreach (char c in pw)
+            bool hasLetter = false;
+            bool hasDigit = false;
+
+            for (int i = 0; i < pw.Length; i++)
             {
-                if (char.IsLetter(c)) hasLetter = true;
-                if (char.IsDigit(c)) hasDigit = true;
+                char c = pw[i];
+                if (!hasLetter && char.IsLetter(c)) hasLetter = true;
+                if (!hasDigit && char.IsDigit(c)) hasDigit = true;
             }
-            return hasLetter && hasDigit;
-        }
 
-        /* ================= UI HELPERS ================= */
+            bool result = hasLetter && hasDigit;
+            return result;
+        }
 
         private void ToggleControls(bool enabled)
         {
-            btnEncrypt.Enabled = enabled;
-            btnDecrypt.Enabled = enabled;
-            btnBrowse.Enabled = enabled;
+            Button[] buttons = new Button[] { btnEncrypt, btnDecrypt, btnBrowse };
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                buttons[i].Enabled = enabled;
+            }
         }
 
         private void ClearPassword()
         {
-            txtPassword.Text = string.Empty;
+            if (!string.IsNullOrEmpty(txtPassword.Text))
+            {
+                txtPassword.Text = string.Empty;
+            }
         }
 
-        private void LogInfo(string msg) => AppendLog(msg, Color.DodgerBlue, "[B›LG›]");
-        private void LogSuccess(string msg) => AppendLog(msg, Color.Green, "[BAﬁARILI]");
-        private void LogWarning(string msg) => AppendLog(msg, Color.Orange, "[UYARI]");
-        private void LogError(string msg) => AppendLog(msg, Color.Red, "[HATA]");
+        private void LogInfo(string msg)
+        {
+            AppendLog(msg, Color.DodgerBlue, "[B√ùLG√ù]");
+        }
+
+        private void LogSuccess(string msg)
+        {
+            AppendLog(msg, Color.Green, "[BA√ûARILI]");
+        }
+
+        private void LogWarning(string msg)
+        {
+            AppendLog(msg, Color.Orange, "[UYARI]");
+        }
+
+        private void LogError(string msg)
+        {
+            AppendLog(msg, Color.Red, "[HATA]");
+        }
 
         private void AppendLog(string message, Color color, string prefix)
         {
-            richLog.SelectionStart = richLog.TextLength;
+            int start = richLog.TextLength;
+            richLog.SelectionStart = start;
             richLog.SelectionColor = color;
-            richLog.AppendText($"{prefix} {message}\n");
+
+            string line = string.Concat(prefix, " ", message, Environment.NewLine);
+            richLog.AppendText(line);
+
             richLog.SelectionColor = richLog.ForeColor;
             richLog.ScrollToCaret();
         }
 
         private void TxtFilePath_DoubleClick(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                SetFilePath(openFileDialog1.FileName);
+            DialogResult r = openFileDialog1.ShowDialog();
+            if (r == DialogResult.OK)
+            {
+                string p = openFileDialog1.FileName;
+                SetFilePath(p);
+            }
         }
     }
 }
