@@ -7,12 +7,12 @@ namespace FileEncryptor
     internal static class Program
     {
         [STAThread]
-        static void Main()
+        private static void Main()
         {
-            // UI thread hatalarý
+            // UI thread hatalarÄ±
             Application.ThreadException += OnThreadException;
 
-            // UI dýþý (Task / background) hatalar
+            // UI dÄ±ÅŸÄ± (Task / background) hatalar
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
@@ -29,9 +29,13 @@ namespace FileEncryptor
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             if (e.ExceptionObject is Exception ex)
+            {
                 HandleFatalError(ex);
+            }
             else
+            {
                 ShowGenericFatalMessage();
+            }
         }
 
         private static void HandleFatalError(Exception ex)
@@ -44,7 +48,7 @@ namespace FileEncryptor
                 MessageBoxIcon.Error);
 #else
             MessageBox.Show(
-                "Beklenmeyen bir hata oluþtu. Uygulama güvenli þekilde kapatýlacak.",
+                "Beklenmeyen bir hata oluÅŸtu. Uygulama gÃ¼venli ÅŸekilde kapatÄ±lacak.",
                 "Kritik Hata",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
@@ -55,7 +59,7 @@ namespace FileEncryptor
         private static void ShowGenericFatalMessage()
         {
             MessageBox.Show(
-                "Bilinmeyen bir hata oluþtu. Uygulama kapatýlýyor.",
+                "Bilinmeyen bir hata oluÅŸtu. Uygulama kapatÄ±lÄ±yor.",
                 "Kritik Hata",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
