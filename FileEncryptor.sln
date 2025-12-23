@@ -1,25 +1,34 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
 VisualStudioVersion = 17.14.36221.1 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
+
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileEncryptor", "FileEncryptor.csproj", "{467397D2-F374-44D0-BE62-113CE2787F44}"
 EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
+
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{467397D2-F374-44D0-BE62-113CE2787F44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{467397D2-F374-44D0-BE62-113CE2787F44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{467397D2-F374-44D0-BE62-113CE2787F44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{467397D2-F374-44D0-BE62-113CE2787F44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B0275FE-8D78-48C3-AE06-EDEF751C55F6}
+	EndGlobalSection
+
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+
+	GlobalSection(Performance) = postSolution
 	EndGlobalSection
 EndGlobal
