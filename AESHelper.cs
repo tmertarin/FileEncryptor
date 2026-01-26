@@ -231,11 +231,11 @@ namespace FileEncryptor
             s.ReadExactly(m, 0, m.Length);
 
             if (!CryptographicOperations.FixedTimeEquals(m, MAGIC))
-                throw new CryptographicException("Geçersiz dosya.");
+                throw new CryptographicException("Invalid file."); // Changed from "Geçersiz dosya."
 
             int v = s.ReadByte();
             if (v != VERSION)
-                throw new CryptographicException("Sürüm uyumsuz.");
+                throw new CryptographicException("Version mismatch."); // Changed from "Sürüm uyumsuz."
 
             iter = ReadInt(s);
 
