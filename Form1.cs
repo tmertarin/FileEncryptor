@@ -62,7 +62,6 @@ namespace FileEncryptor
 
                 if (files.Length > 1)
                 {
-                    // "Birden fazla dosya algılandı..." -> Translated
                     LogWarning("Multiple files detected, only the first one will be used.");
                 }
             }
@@ -71,7 +70,6 @@ namespace FileEncryptor
         private void SetFilePath(string path)
         {
             txtFilePath.Text = path;
-            // "Dosya seçildi: " -> Translated
             string msg = string.Concat("File selected: ", path);
             LogInfo(msg);
         }
@@ -81,12 +79,15 @@ namespace FileEncryptor
             bool ok = PreCheck(encrypting: true);
             if (!ok) return;
 
+            string path = txtFilePath.Text;
+            string pass = txtPassword.Text;
+
             Func<bool> guard = () => true;
             if (guard())
             {
                 await RunCryptoOperation(
-                    () => AESHelper.EncryptFile(txtFilePath.Text, txtPassword.Text),
-                    "Encryption completed." // "Şifreleme tamamlandı." -> Translated
+                    () => AESHelper.EncryptFile(path, pass),
+                    "Encryption completed."
                 );
             }
         }
@@ -96,9 +97,12 @@ namespace FileEncryptor
             bool ok = PreCheck(encrypting: false);
             if (!ok) return;
 
+            string path = txtFilePath.Text;
+            string pass = txtPassword.Text;
+
             await RunCryptoOperation(
-                () => AESHelper.DecryptFile(txtFilePath.Text, txtPassword.Text),
-                "Decryption completed." // "Şifre çözme tamamlandı." -> Translated
+                () => AESHelper.DecryptFile(path, pass),
+                "Decryption completed."
             );
         }
 
@@ -118,18 +122,15 @@ namespace FileEncryptor
             }
             catch (CryptographicException)
             {
-                // "Parola yanlış olabilir veya dosya bozulmuş." -> Translated
                 LogError("Incorrect password or corrupted file.");
             }
             catch (InvalidDataException ide)
             {
-                // "Dosya formatı geçersiz: " -> Translated
                 string m = string.Concat("Invalid file format: ", ide.Message);
                 LogError(m);
             }
             catch (Exception ex)
             {
-                // "Beklenmeyen hata: " -> Translated
                 LogError("Unexpected error: " + ex.Message);
             }
             finally
@@ -146,17 +147,14 @@ namespace FileEncryptor
 
             if (emptyPath || emptyPw)
             {
-                // "Dosya yolu ve parola zorunludur." -> Translated
                 LogWarning("File path and password are required.");
                 return false;
             }
 
-            bool alreadyEncrypted = encrypting &&
-                                    txtFilePath.Text.EndsWith(".aes", StringComparison.OrdinalIgnoreCase);
+            bool alreadyEncrypted = encrypting && txtFilePath.Text.EndsWith(".aes", StringComparison.OrdinalIgnoreCase);
 
             if (alreadyEncrypted)
             {
-                // "Zaten şifreli bir dosya tekrar şifrelenemez." -> Translated
                 LogWarning("An already encrypted file cannot be re-encrypted.");
                 return false;
             }
@@ -164,11 +162,9 @@ namespace FileEncryptor
             bool strong = IsPasswordStrong(txtPassword.Text);
             if (!strong)
             {
-                // "Parola çok zayıf..." -> Translated
                 LogWarning("Password is too weak. At least 10 chars, letter + digit recommended.");
                 return false;
             }
-
             return true;
         }
 
@@ -210,22 +206,22 @@ namespace FileEncryptor
 
         private void LogInfo(string msg)
         {
-            AppendLog(msg, Color.DodgerBlue, "[INFO]"); // [BİLGİ] -> [INFO]
+            AppendLog(msg, Color.DodgerBlue, "[INFO]");
         }
 
         private void LogSuccess(string msg)
         {
-            AppendLog(msg, Color.Green, "[SUCCESS]"); // [BAŞARILI] -> [SUCCESS]
+            AppendLog(msg, Color.Green, "[SUCCESS]");
         }
 
         private void LogWarning(string msg)
         {
-            AppendLog(msg, Color.Orange, "[WARNING]"); // [UYARI] -> [WARNING]
+            AppendLog(msg, Color.Orange, "[WARNING]");
         }
 
         private void LogError(string msg)
         {
-            AppendLog(msg, Color.Red, "[ERROR]"); // [HATA] -> [ERROR]
+            AppendLog(msg, Color.Red, "[ERROR]");
         }
 
         private void AppendLog(string message, Color color, string prefix)
