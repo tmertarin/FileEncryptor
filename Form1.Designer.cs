@@ -68,7 +68,7 @@ namespace FileEncryptor
                 btnBrowse.Name = "btnBrowse";
                 btnBrowse.Size = new Size(60, 28);
                 btnBrowse.TabIndex = 1;
-                btnBrowse.Text = "Browse"; // "Gözat" -> "Browse"
+                btnBrowse.Text = "Browse";
                 btnBrowse.UseVisualStyleBackColor = false;
 
                 EventHandler browseHandler = BtnBrowse_Click;
@@ -99,7 +99,7 @@ namespace FileEncryptor
                 labelFile.Name = "labelFile";
                 labelFile.Size = new Size(100, 23);
                 labelFile.TabIndex = 2;
-                labelFile.Text = "FILE PATH"; // "DOSYA YOLU" -> "FILE PATH"
+                labelFile.Text = "FILE PATH";
             }
 
             {
@@ -109,7 +109,7 @@ namespace FileEncryptor
                 labelPassword.Name = "labelPassword";
                 labelPassword.Size = new Size(100, 23);
                 labelPassword.TabIndex = 4;
-                labelPassword.Text = "PASSWORD"; // "ŞİFRE" -> "PASSWORD"
+                labelPassword.Text = "PASSWORD";
             }
 
             {
@@ -123,7 +123,7 @@ namespace FileEncryptor
                 btnEncrypt.Name = "btnEncrypt";
                 btnEncrypt.Size = new Size(165, 45);
                 btnEncrypt.TabIndex = 5;
-                btnEncrypt.Text = "ENCRYPT"; // "ŞİFRELE" -> "ENCRYPT"
+                btnEncrypt.Text = "ENCRYPT";
                 btnEncrypt.UseVisualStyleBackColor = false;
 
                 btnEncrypt.Click += BtnEncrypt_Click;
@@ -140,7 +140,7 @@ namespace FileEncryptor
                 btnDecrypt.Name = "btnDecrypt";
                 btnDecrypt.Size = new Size(165, 45);
                 btnDecrypt.TabIndex = 6;
-                btnDecrypt.Text = "DECRYPT"; // "ŞİFRE ÇÖZ" -> "DECRYPT"
+                btnDecrypt.Text = "DECRYPT";
                 btnDecrypt.UseVisualStyleBackColor = false;
 
                 btnDecrypt.Click += BtnDecrypt_Click;
@@ -167,7 +167,7 @@ namespace FileEncryptor
                 labelLog.Name = "labelLog";
                 labelLog.Size = new Size(100, 23);
                 labelLog.TabIndex = 8;
-                labelLog.Text = "LOGS"; // "LOG" -> "LOGS" (optional but looks better)
+                labelLog.Text = "LOGS";
             }
 
             {
@@ -177,7 +177,7 @@ namespace FileEncryptor
                 lblDragDrop.Name = "lblDragDrop";
                 lblDragDrop.Size = new Size(324, 23);
                 lblDragDrop.TabIndex = 9;
-                lblDragDrop.Text = "Drag and drop a file here."; // "Dosyayı sürükleyip bırakabilirsiniz." -> Eng
+                lblDragDrop.Text = "Drag and drop a file here.";
                 lblDragDrop.TextAlign = ContentAlignment.MiddleLeft;
             }
 
