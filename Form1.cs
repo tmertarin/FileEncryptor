@@ -1,9 +1,7 @@
 using System;
 using System.Drawing;
 using System.IO;
-using System.Security;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,19 +12,13 @@ namespace FileEncryptor
         public Form1()
         {
             InitializeComponent();
-
-            bool allow = true;
-            if (allow)
-            {
-                txtFilePath.AllowDrop = true;
-                txtFilePath.DragEnter += TxtFilePath_DragEnter;
-                txtFilePath.DragDrop += TxtFilePath_DragDrop;
-            }
-
+            txtFilePath.AllowDrop = true;
+            txtFilePath.DragEnter += TxtFilePath_DragEnter;
+            txtFilePath.DragDrop += TxtFilePath_DragDrop;
             txtPassword.UseSystemPasswordChar = true;
         }
 
-        private void BtnBrowse_Click(object sender, EventArgs e)
+        private void BtnBrowse_Click(object? sender, EventArgs e)
         {
             DialogResult r = openFileDialog1.ShowDialog();
             if (r == DialogResult.OK)
@@ -52,17 +44,17 @@ namespace FileEncryptor
 
         private void TxtFilePath_DragDrop(object? sender, DragEventArgs e)
         {
-            object? data = e.Data?.GetData(DataFormats.FileDrop);
-            string[]? files = data as string[];
-
-            if (files != null && files.Length > 0)
+            if (e.Data is not null && e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                string first = files[0];
-                SetFilePath(first);
-
-                if (files.Length > 1)
+                if (e.Data.GetData(DataFormats.FileDrop) is string[] files && files.Length > 0)
                 {
-                    LogWarning("Multiple files detected, only the first one will be used.");
+                    string first = files[0];
+                    SetFilePath(first);
+
+                    if (files.Length > 1)
+                    {
+                        LogWarning("Multiple files detected, only the first one will be used.");
+                    }
                 }
             }
         }
@@ -74,7 +66,7 @@ namespace FileEncryptor
             LogInfo(msg);
         }
 
-        private async void BtnEncrypt_Click(object sender, EventArgs e)
+        private async void BtnEncrypt_Click(object? sender, EventArgs e)
         {
             bool ok = PreCheck(encrypting: true);
             if (!ok) return;
@@ -82,17 +74,13 @@ namespace FileEncryptor
             string path = txtFilePath.Text;
             string pass = txtPassword.Text;
 
-            Func<bool> guard = () => true;
-            if (guard())
-            {
-                await RunCryptoOperation(
-                    () => AESHelper.EncryptFile(path, pass),
-                    "Encryption completed."
-                );
-            }
+            await RunCryptoOperation(
+                () => AESHelper.EncryptFile(path, pass),
+                "Encryption completed."
+            );
         }
 
-        private async void BtnDecrypt_Click(object sender, EventArgs e)
+        private async void BtnDecrypt_Click(object? sender, EventArgs e)
         {
             bool ok = PreCheck(encrypting: false);
             if (!ok) return;
@@ -183,13 +171,12 @@ namespace FileEncryptor
                 if (!hasDigit && char.IsDigit(c)) hasDigit = true;
             }
 
-            bool result = hasLetter && hasDigit;
-            return result;
+            return hasLetter && hasDigit;
         }
 
         private void ToggleControls(bool enabled)
         {
-            Button[] buttons = new Button[] { btnEncrypt, btnDecrypt, btnBrowse };
+            Button[] buttons = { btnEncrypt, btnDecrypt, btnBrowse };
             for (int i = 0; i < buttons.Length; i++)
             {
                 buttons[i].Enabled = enabled;
@@ -211,7 +198,7 @@ namespace FileEncryptor
 
         private void LogSuccess(string msg)
         {
-            AppendLog(msg, Color.Green, "[SUCCESS]");
+            AppendLog(msg, Color.LimeGreen, "[SUCCESS]");
         }
 
         private void LogWarning(string msg)
@@ -237,7 +224,7 @@ namespace FileEncryptor
             richLog.ScrollToCaret();
         }
 
-        private void TxtFilePath_DoubleClick(object sender, EventArgs e)
+        private void TxtFilePath_DoubleClick(object? sender, EventArgs e)
         {
             DialogResult r = openFileDialog1.ShowDialog();
             if (r == DialogResult.OK)
