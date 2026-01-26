@@ -9,10 +9,10 @@ namespace FileEncryptor
         [STAThread]
         private static void Main()
         {
-            // UI thread hataları
+            // UI thread errors
             Application.ThreadException += OnThreadException;
 
-            // UI dışı (Task / background) hatalar
+            // Non-UI (Task / background) errors
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
@@ -43,13 +43,13 @@ namespace FileEncryptor
 #if DEBUG
             MessageBox.Show(
                 ex.ToString(),
-                "Kritik Hata (DEBUG)",
+                "Critical Error (DEBUG)", // "Kritik Hata (DEBUG)" -> Translated
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
 #else
             MessageBox.Show(
-                "Beklenmeyen bir hata oluştu. Uygulama güvenli şekilde kapatılacak.",
-                "Kritik Hata",
+                "An unexpected error occurred. The application will close safely.", // Translated
+                "Critical Error", // Translated
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
 #endif
@@ -59,8 +59,8 @@ namespace FileEncryptor
         private static void ShowGenericFatalMessage()
         {
             MessageBox.Show(
-                "Bilinmeyen bir hata oluştu. Uygulama kapatılıyor.",
-                "Kritik Hata",
+                "An unknown error occurred. Application is closing.", // Translated
+                "Critical Error", // Translated
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
 
