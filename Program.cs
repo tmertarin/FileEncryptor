@@ -9,23 +9,16 @@ namespace FileEncryptor
         [STAThread]
         private static void Main()
         {
-            // UI thread errors
             Application.ThreadException += OnThreadException;
-
-            // Non-UI (Task / background) errors
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
         }
-
         private static void OnThreadException(object sender, ThreadExceptionEventArgs e)
         {
             HandleFatalError(e.Exception);
         }
-
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             if (e.ExceptionObject is Exception ex)
@@ -37,34 +30,31 @@ namespace FileEncryptor
                 ShowGenericFatalMessage();
             }
         }
-
         private static void HandleFatalError(Exception ex)
         {
 #if DEBUG
             MessageBox.Show(
                 ex.ToString(),
-                "Critical Error (DEBUG)", // "Kritik Hata (DEBUG)" -> Translated
+                "Critical Error (DEBUG)",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
 #else
             MessageBox.Show(
-                "An unexpected error occurred. The application will close safely.", // Translated
-                "Critical Error", // Translated
+                "An unexpected error occurred. The application will close safely.",
+                "Critical Error",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
 #endif
             Environment.Exit(1);
         }
-
         private static void ShowGenericFatalMessage()
         {
             MessageBox.Show(
-                "An unknown error occurred. Application is closing.", // Translated
-                "Critical Error", // Translated
+                "An unknown error occurred. Application is closing.",
+                "Critical Error",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
-
-            Environment.Exit(1);
+             Environment.Exit(1);
         }
     }
 }
